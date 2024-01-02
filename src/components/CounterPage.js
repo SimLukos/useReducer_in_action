@@ -1,42 +1,43 @@
 'use client';
 import { useReducer } from 'react';
 
+const INCREMENT_COUNT = 'increment';
+const DECREMENT_COUNT = 'decrement';
+const VALUE_TO_ADD = 'valueToAdd';
+const SUBMIT = 'submit';
+
 const reducer = (state, action) => {
-  if (action.type === 'increment') {
-    return {
-      ...state,
-      count: state.count + 1,
-    };
-  }
+  switch (action.type) {
+    case INCREMENT_COUNT:
+      return {
+        ...state,
+        count: state.count + 1,
+      };
 
-  if (action.type === 'decrement') {
-    return {
-      ...state,
-      count: state.count - 1,
-    };
-  }
+    case DECREMENT_COUNT:
+      return {
+        ...state,
+        count: state.count - 1,
+      };
 
-  if (action.type === 'valueToAdd') {
-    return {
-      ...state,
-      valueToAdd: action.value,
-    };
-  }
+    case VALUE_TO_ADD:
+      return {
+        ...state,
+        valueToAdd: action.value,
+      };
 
-  if (action.type === 'submit') {
-    return {
-      ...state,
-      count: state.count + action.value,
-      valueToAdd: 0,
-    };
-  }
+    case SUBMIT:
+      return {
+        ...state,
+        count: state.count + state.valueToAdd,
+      };
 
-  return state;
+    default:
+      throw new Error('Unexpected action type: ' + action.type);
+  }
 };
 
 export default function CounterPage() {
-  // const [count, setCount] = useState(initialCount);
-  // const [valueToAdd, setValueToAdd] = useState(0);
   const [state, dispatch] = useReducer(reducer, {
     count: 0,
     valueToAdd: 0,
@@ -44,13 +45,13 @@ export default function CounterPage() {
 
   const increment = () => {
     dispatch({
-      type: 'increment',
+      type: INCREMENT_COUNT,
     });
   };
 
   const decrement = () => {
     dispatch({
-      type: 'decrement',
+      type: DECREMENT_COUNT,
     });
   };
 
@@ -58,23 +59,18 @@ export default function CounterPage() {
     const value = parseInt(event.target.value) || 0;
 
     dispatch({
-      type: 'valueToAdd',
+      type: VALUE_TO_ADD,
       value,
     });
-
-    // setValueToAdd(value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     dispatch({
-      type: 'submit',
+      type: SUBMIT,
       value: state.valueToAdd,
     });
-
-    // setCount(count + valueToAdd);
-    // setValueToAdd(0);
   };
 
   return (
